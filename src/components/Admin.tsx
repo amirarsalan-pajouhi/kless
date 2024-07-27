@@ -1,14 +1,8 @@
 import { useState, useEffect } from "react";
-
-
-import {
-  collection,
-  getDocs,
-  updateDoc,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
+import { collection, getDocs, updateDoc, deleteDoc, doc } from "firebase/firestore";
 import { auth, db } from "../firebase";
+import { signOut } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 interface User {
   id: string;
@@ -26,8 +20,7 @@ interface GroupedUsers {
 export default function Admin() {
   const [users, setUsers] = useState<User[]>([]);
   const [groupedUsers, setGroupedUsers] = useState<GroupedUsers>({});
-
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -76,6 +69,15 @@ export default function Admin() {
     await deleteDoc(userDoc);
 
     setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
   };
 
   return (
@@ -134,6 +136,12 @@ export default function Admin() {
             </div>
           ))}
         </div>
+        <button
+          onClick={handleLogout}
+          className="absolute bottom-4 left-4 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+        >
+          Logout
+        </button>
       </div>
     </section>
   );
