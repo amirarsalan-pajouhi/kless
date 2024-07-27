@@ -7,6 +7,9 @@ import {
   setDoc,
   onSnapshot,
 } from "firebase/firestore";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Link } from "react-router-dom";
 
 interface User {
   name: string;
@@ -64,10 +67,12 @@ const Home: React.FC = () => {
   const handleSubmit = async () => {
     if (!name) {
       setError("Please enter your name.");
+      toast.error("Please enter your name.");
       return;
     }
     if (!selectedOption) {
       setError("Please select an option.");
+      toast.error("Please select an option.");
       return;
     }
 
@@ -82,13 +87,24 @@ const Home: React.FC = () => {
       });
       setSelectedOption(null);
       setError("");
+      toast.success("Submitted!");
     } catch (error) {
       console.error("Error updating document: ", error);
+      toast.error("Error updating document.");
     }
   };
 
   return (
+    
     <section className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center">
+            <div className="mt-4 absolute top-1 right-9">
+              <Link
+                to="/login"
+                className="inline-block px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+              >
+               Login
+              </Link>
+            </div>
       <div className="container mx-auto p-6">
         <div className="w-full bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -143,6 +159,8 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
+
     </section>
   );
 }
