@@ -97,7 +97,7 @@ const Home: React.FC = () => {
   return (
     
     <section className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center">
-            <div className="mt-4 absolute top-1 right-9">
+            <div className="mt-4 absolute top-1 right-9 ">
               <Link
                 to="/login"
                 className="inline-block px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
@@ -105,7 +105,7 @@ const Home: React.FC = () => {
                Login
               </Link>
             </div>
-      <div className="container mx-auto p-6">
+      <div className="container mx-auto p-14 max-w-2xl ">
         <div className="w-full bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-2xl font-bold leading-tight tracking-tight text-gray-900 md:text-3xl dark:text-white">
