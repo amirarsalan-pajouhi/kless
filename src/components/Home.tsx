@@ -95,16 +95,15 @@ const Home: React.FC = () => {
   };
 
   return (
-    
     <section className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center">
-            <div className="mt-4 absolute top-1 right-9 ">
-              <Link
-                to="/login"
-                className="inline-block px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
-              >
-               Login
-              </Link>
-            </div>
+      <div className="mt-4 absolute top-1 right-9 ">
+        <Link
+          to="/login"
+          className="inline-block px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+        >
+          Login
+        </Link>
+      </div>
       <div className="container mx-auto p-14 max-w-2xl ">
         <div className="w-full bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -129,7 +128,9 @@ const Home: React.FC = () => {
               />
             </div>
             <div className="mb-4">
-              <h3 className="text-xl font-semibold dark:text-white mb-3">Options:</h3>
+              <h3 className="text-xl font-semibold dark:text-white mb-3">
+                Options:
+              </h3>
               <div className="flex flex-col space-y-2">
                 {options.map((option, index) => (
                   <button
@@ -160,9 +161,8 @@ const Home: React.FC = () => {
         </div>
       </div>
       <ToastContainer />
-
     </section>
   );
-}
+};
 
 export default Home;
