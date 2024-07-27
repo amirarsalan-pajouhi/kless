@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { collection, getDocs, updateDoc, deleteDoc, doc } from "firebase/firestore";
+import { collection, onSnapshot, updateDoc, deleteDoc, doc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
@@ -23,17 +23,18 @@ export default function Admin() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      const userCollection = collection(db, "users");
-      const userSnapshot = await getDocs(userCollection);
-      const userList = userSnapshot.docs.map((doc) => ({
+    // Set up Firestore listener
+    const userCollection = collection(db, "users");
+    const unsubscribe = onSnapshot(userCollection, (snapshot) => {
+      const userList = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       })) as User[];
       setUsers(userList);
-    };
+    });
 
-    fetchUsers();
+    // Clean up the listener on component unmount
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -54,21 +55,11 @@ export default function Admin() {
   const handleAccept = async (id: string) => {
     const userDoc = doc(db, "users", id);
     await updateDoc(userDoc, { status: true, admin: auth.currentUser?.uid });
-
-    setUsers((prevUsers) =>
-      prevUsers.map((user) =>
-        user.id === id
-          ? { ...user, status: true, admin: auth.currentUser?.uid }
-          : user
-      )
-    );
   };
 
   const handleDelete = async (id: string) => {
     const userDoc = doc(db, "users", id);
     await deleteDoc(userDoc);
-
-    setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
   };
 
   const handleLogout = async () => {
