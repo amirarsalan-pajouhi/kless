@@ -8,18 +8,25 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 
-function Home() {
-  const [name, setName] = useState("");
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [options, setOptions] = useState([]);
-  const [error, setError] = useState("");
-  const [status, setStatus] = useState(false);
+interface User {
+  name: string;
+  option: string;
+  time: string;
+  status: boolean;
+}
+
+const Home: React.FC = () => {
+  const [name, setName] = useState<string>("");
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [options, setOptions] = useState<string[]>([]);
+  const [error, setError] = useState<string>("");
+  const [status, setStatus] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchOptions = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "Queue"));
-        const allOptions = [];
+        const allOptions: string[] = [];
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           if (data.options && Array.isArray(data.options)) {
@@ -40,7 +47,7 @@ function Home() {
       const userDoc = doc(db, "users", name);
       const unsubscribe = onSnapshot(userDoc, (doc) => {
         if (doc.exists()) {
-          const userData = doc.data();
+          const userData = doc.data() as User;
           setStatus(userData.status);
         }
       });
@@ -49,7 +56,7 @@ function Home() {
     }
   }, [name]);
 
-  const handleOptionClick = (option) => {
+  const handleOptionClick = (option: string) => {
     setSelectedOption(option);
     setError("");
   };
