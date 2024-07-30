@@ -72,9 +72,9 @@ export default function Admin() {
   };
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col items-center p-6">
+    <section className="bg-gray-900 min-h-screen flex flex-col items-center p-6">
       <div className="container mx-auto">
-        <h1 className="text-2xl font-bold leading-tight tracking-tight text-gray-900 md:text-3xl dark:text-white mb-4">
+        <h1 className="text-2xl font-bold leading-tight tracking-tight text-white md:text-3xl mb-4">
           Admin Page
         </h1>
 
@@ -82,9 +82,9 @@ export default function Admin() {
           {Object.keys(groupedUsers).map((option) => (
             <div
               key={option}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"
+              className="bg-gray-800 rounded-lg shadow p-4"
             >
-              <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
+              <h2 className="text-xl font-semibold mb-2 text-white">
                 {option}
               </h2>
               {groupedUsers[option].map((user) => (
@@ -92,14 +92,14 @@ export default function Admin() {
                   key={user.id}
                   className={`p-4 border rounded mb-4 ${
                     user.status
-                      ? "bg-yellow-300 dark:bg-yellow-600"
-                      : "bg-gray-100 dark:bg-gray-700"
+                      ? "bg-yellow-600"
+                      : "bg-gray-700"
                   }`}
                 >
-                  <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <p className="text-lg font-semibold text-white">
                     {user.name}
                   </p>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                  <p className="text-sm text-gray-300">
                     {user.time}
                   </p>
                   <div className="flex space-x-2 mt-2">

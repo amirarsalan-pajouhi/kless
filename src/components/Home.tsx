@@ -10,6 +10,8 @@ import {
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
+import { Button, Input } from "@material-tailwind/react";
+import * as React from "react";
 
 interface User {
   name: string;
@@ -22,11 +24,12 @@ const Home: React.FC = () => {
   const [name, setName] = useState<string>("");
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [options, setOptions] = useState<string[]>([]);
-  const [error, setError] = useState<string>("");
   const [status, setStatus] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchOptions = async () => {
+      setLoading(true);
       try {
         const querySnapshot = await getDocs(collection(db, "Queue"));
         const allOptions: string[] = [];
@@ -39,6 +42,9 @@ const Home: React.FC = () => {
         setOptions(allOptions);
       } catch (error) {
         console.error("Error fetching documents: ", error);
+        toast.error("Failed to load options.");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -61,17 +67,14 @@ const Home: React.FC = () => {
 
   const handleOptionClick = (option: string) => {
     setSelectedOption(option);
-    setError("");
   };
 
   const handleSubmit = async () => {
     if (!name) {
-      setError("Please enter your name.");
       toast.error("Please enter your name.");
       return;
     }
     if (!selectedOption) {
-      setError("Please select an option.");
       toast.error("Please select an option.");
       return;
     }
@@ -86,77 +89,86 @@ const Home: React.FC = () => {
         status: false,
       });
       setSelectedOption(null);
-      setError("");
-      toast.success("Submitted!");
+      toast.success("Submission successful!");
     } catch (error) {
       console.error("Error updating document: ", error);
-      toast.error("Error updating document.");
+      toast.error("Failed to submit data.");
     }
   };
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center">
-      <div className="mt-4 absolute top-1 right-9 ">
+    <section className="bg-gray-900 min-h-screen flex flex-col items-center justify-center p-4">
+      <div className="absolute top-4 right-4">
         <Link
           to="/login"
-          className="inline-block px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+          className="inline-block px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
         >
           Login
         </Link>
       </div>
-      <div className="container mx-auto p-14 max-w-2xl ">
-        <div className="w-full bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700">
-          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 className="text-2xl font-bold leading-tight tracking-tight text-gray-900 md:text-3xl dark:text-white">
+      <div className="container mx-auto p-4 max-w-md">
+        <div className="bg-gray-800 rounded-lg shadow-lg border border-gray-700">
+          <div className="p-6 space-y-4">
+            <h1 className="text-3xl font-extrabold text-white mb-4">
               Queue App
             </h1>
             <div className="mb-4">
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Name:
-              </label>
-              <input
-                type="text"
-                id="name"
+              <Input
+                label="Name"
                 value={name}
+                labelProps={{ color: "black" }}
                 onChange={(e) => setName(e.target.value)}
-                className={`mt-1 block w-full px-3 py-2 border ${
-                  error.includes("name") ? "border-red-500" : "border-gray-300"
-                } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                className="bg-gray-700  border-gray-600"
+                color="white"
+                aria-autocomplete="none"
+                onPointerEnterCapture={undefined}
+                onPointerLeaveCapture={undefined}
+                crossOrigin={undefined}
               />
             </div>
             <div className="mb-4">
-              <h3 className="text-xl font-semibold dark:text-white mb-3">
+              <h3 className="text-xl font-semibold text-white mb-3">
                 Options:
               </h3>
-              <div className="flex flex-col space-y-2">
-                {options.map((option, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleOptionClick(option)}
-                    className={`px-4 py-2 ${
-                      selectedOption === option ? "bg-green-500" : "bg-blue-500"
-                    } text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50`}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
+              {loading ? (
+                <div className="text-center text-white">Loading...</div>
+              ) : (
+                <div className="flex flex-col space-y-2">
+                  {options.map((option, index) => (
+                    <Button
+                      key={index}
+                      onClick={() => handleOptionClick(option)}
+                      color={selectedOption === option ? "white" : "black"}
+                      className={
+                        selectedOption === option
+                          ? " text-gray-900  focus:outline-none focus:ring-2 "
+                          : "text-white  focus:outline-none focus:ring-2 "
+                      }
+                      placeholder={undefined}
+                      onPointerEnterCapture={undefined}
+                      onPointerLeaveCapture={undefined}
+                    >
+                      {option}
+                    </Button>
+                  ))}
+                </div>
+              )}
             </div>
-            {error && <div className="mb-4 text-red-500">{error}</div>}
-            <button
+            <Button
               onClick={handleSubmit}
-              className="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
+              color="white"
+              className="text-gray-900 "
+              placeholder={undefined}
+              onPointerEnterCapture={undefined}
+              onPointerLeaveCapture={undefined}
             >
               Submit
-            </button>
+            </Button>
             <div
-              className={`mt-4 w-full h-20 ${
-                status ? "bg-green-500" : "bg-yellow-500"
-              } rounded-md`}
-            ></div>
+              className={`mt-4 w-full h-20 rounded-md ${
+                status ? "bg-green-600" : "bg-yellow-600"
+              } transition-colors duration-300`}
+            />
           </div>
         </div>
       </div>
