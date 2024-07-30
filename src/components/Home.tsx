@@ -79,7 +79,7 @@ const Home: React.FC = () => {
       return;
     }
   
-    const timestamp = new Date().toLocaleTimeString();
+    const timestamp = new Date().toLocaleTimeString(); 
   
     try {
       await setDoc(doc(db, "users", name), {
