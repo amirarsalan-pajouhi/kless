@@ -78,9 +78,9 @@ const Home: React.FC = () => {
       toast.error("Please select an option.");
       return;
     }
-
-    const timestamp = new Date().toLocaleString();
-
+  
+    const timestamp = new Date().toLocaleTimeString();
+  
     try {
       await setDoc(doc(db, "users", name), {
         name: name,
@@ -95,6 +95,7 @@ const Home: React.FC = () => {
       toast.error("Failed to submit data.");
     }
   };
+  
 
   return (
     <section className="bg-gray-900 min-h-screen flex flex-col items-center justify-center p-4">
@@ -138,7 +139,7 @@ const Home: React.FC = () => {
                     <Button
                       key={index}
                       onClick={() => handleOptionClick(option)}
-                      color={selectedOption === option ? "white" : "black"}
+                      color={selectedOption === option ? "green" : "black"}
                       className={
                         selectedOption === option
                           ? " text-gray-900  focus:outline-none focus:ring-2 "

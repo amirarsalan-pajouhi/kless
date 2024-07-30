@@ -14,7 +14,7 @@ import {
 export default function Login() {
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const username = e.target.username.value;
     const password = e.target.password.value;
@@ -36,12 +36,13 @@ export default function Login() {
   };
 
   return (
-    <section className="bg-gray-50 bg-gray-900 min-h-screen flex items-center justify-center p-8">
+    <section style={{backgroundColor: "#202020"}} className="bg-gray-50 bg-gray-900 min-h-screen flex items-center justify-center p-8">
       <ToastContainer theme="dark" autoClose={2000} />
       <Card
         color="transparent"
         shadow={false}
-        className="w-full max-w-md p-8 bg-gray-800 border border-gray-700 flex items-center justify-center"
+        className="w-full max-w-md p-8"
+        style={{ backgroundColor: "#424242", borderColor: "#033649" , display: "flex", alignItems:"center", justifyContent:"center"}}
         placeholder={undefined}
         onPointerEnterCapture={undefined}
         onPointerLeaveCapture={undefined}
@@ -53,7 +54,7 @@ export default function Login() {
           onPointerEnterCapture={undefined}
           onPointerLeaveCapture={undefined}
         >
-          Sign in
+          Log in
         </Typography>
         <form
           className="mt-8 mb-2 w-80 max-w-screen-lg"
@@ -97,9 +98,8 @@ export default function Login() {
             <Input
               type="password"
               name="password"
-            
               className="!border-t-blue-gray-200 focus:!border-t-gray-900 bg-white"
-              style={{ color: "black",  }}
+              style={{ color: "black" }}
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
@@ -112,7 +112,6 @@ export default function Login() {
             <div className="flex items-center">
               <Checkbox
                 id="remember"
-               
                 onPointerEnterCapture={undefined}
                 onPointerLeaveCapture={undefined}
                 crossOrigin={undefined}
@@ -139,14 +138,14 @@ export default function Login() {
           </div>
           <Button
             type="submit"
-            className="w-full mt-4"
+            style={{ backgroundColor: "#202020" }}
+            className="w-full mt-4 "
             placeholder={undefined}
             onPointerEnterCapture={undefined}
             onPointerLeaveCapture={undefined}
           >
             Sign in
           </Button>
-         
         </form>
       </Card>
     </section>
