@@ -89,7 +89,7 @@ const Home: React.FC = () => {
         status: false,
       });
       setSelectedOption(null);
-      toast.success("Submission successful!");
+      toast.success("Submission successful;;!");
     } catch (error) {
       console.error("Error updating document: ", error);
       toast.error("Failed to submit data.");
