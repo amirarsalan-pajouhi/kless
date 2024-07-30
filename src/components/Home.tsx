@@ -78,9 +78,9 @@ const Home: React.FC = () => {
       toast.error("Please select an option.");
       return;
     }
-  
-    const timestamp = new Date().toLocaleTimeString(); 
-  
+
+    const timestamp = new Date().toLocaleString();
+
     try {
       await setDoc(doc(db, "users", name), {
         name: name,
@@ -89,13 +89,12 @@ const Home: React.FC = () => {
         status: false,
       });
       setSelectedOption(null);
-      toast.success("Submission successful;;!");
+      toast.success("Submission successful!");
     } catch (error) {
       console.error("Error updating document: ", error);
       toast.error("Failed to submit data.");
     }
   };
-  
 
   return (
     <section className="bg-gray-900 min-h-screen flex flex-col items-center justify-center p-4">
@@ -139,7 +138,7 @@ const Home: React.FC = () => {
                     <Button
                       key={index}
                       onClick={() => handleOptionClick(option)}
-                      color={selectedOption === option ? "green" : "black"}
+                      color={selectedOption === option ? "white" : "black"}
                       className={
                         selectedOption === option
                           ? " text-gray-900  focus:outline-none focus:ring-2 "
