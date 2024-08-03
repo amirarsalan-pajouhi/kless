@@ -6,6 +6,8 @@ import {
   doc,
   setDoc,
   onSnapshot,
+  query,
+  where,
 } from "firebase/firestore";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -26,6 +28,9 @@ const Home: React.FC = () => {
   const [options, setOptions] = useState<string[]>([]);
   const [status, setStatus] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [userId, setUserId] = useState<string>("new");
+  const [queueCounts, setQueueCounts] = useState<{ [key: string]: number }>({});
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -40,6 +45,14 @@ const Home: React.FC = () => {
           }
         });
         setOptions(allOptions);
+
+        // Initialize queue counts
+        const counts: { [key: string]: number } = {};
+        allOptions.forEach(option => {
+          counts[option] = 0;
+        });
+        setQueueCounts(counts);
+
       } catch (error) {
         console.error("Error fetching documents: ", error);
         toast.error("Failed to load options.");
@@ -52,8 +65,37 @@ const Home: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (name) {
-      const userDoc = doc(db, "users", name);
+    if (isSubmitted) {
+      const updateQueueCounts = async () => {
+        try {
+          const q = query(collection(db, "users"), where("status", "==", false));
+          const unsubscribe = onSnapshot(q, (snapshot) => {
+            const counts: { [key: string]: number } = {};
+            snapshot.forEach((doc) => {
+              const data = doc.data() as User;
+              if (data.option) {
+                if (!counts[data.option]) {
+                  counts[data.option] = 0;
+                }
+                counts[data.option]++;
+              }
+            });
+            setQueueCounts(counts);
+          });
+
+          return () => unsubscribe(); // Cleanup the listener on unmount
+        } catch (error) {
+          console.error("Error updating queue counts: ", error);
+        }
+      };
+
+      updateQueueCounts();
+    }
+  }, [isSubmitted]);
+
+  useEffect(() => {
+    if (userId) {
+      const userDoc = doc(db, "users", userId);
       const unsubscribe = onSnapshot(userDoc, (doc) => {
         if (doc.exists()) {
           const userData = doc.data() as User;
@@ -61,9 +103,9 @@ const Home: React.FC = () => {
         }
       });
 
-      return () => unsubscribe(); // Cleanup the listener on unmount or when name changes
+      return () => unsubscribe(); // Cleanup the listener on unmount or when userId changes
     }
-  }, [name]);
+  }, [userId]);
 
   const handleOptionClick = (option: string) => {
     setSelectedOption(option);
@@ -78,17 +120,24 @@ const Home: React.FC = () => {
       toast.error("Please select an option.");
       return;
     }
-
-    const timestamp = new Date().toLocaleString();
+    const id = idGenerator();
+    const timestamp = new Date().toLocaleTimeString();
 
     try {
-      await setDoc(doc(db, "users", name), {
-        name: name,
+      await setDoc(doc(db, "users", id), {
+        name,
         option: selectedOption,
         time: timestamp,
         status: false,
+        id
       });
-      setSelectedOption(null);
+      setUserId(id); // Update userId to listen for status changes
+      setIsSubmitted(true); // Set submission state to true
+
+      // Debugging logs
+      console.log("Selected option after submit:", selectedOption);
+      console.log("Queue counts:", queueCounts);
+
       toast.success("Submission successful!");
     } catch (error) {
       console.error("Error updating document: ", error);
@@ -96,8 +145,23 @@ const Home: React.FC = () => {
     }
   };
 
+  const idGenerator = () => {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < 7) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+  };
+
   return (
     <section className="bg-gray-900 min-h-screen flex flex-col items-center justify-center p-4">
+      <div className="absolute top-4 left-4">
+        <img src="public/Fenerbahçe_Üniversitesi_FBÜ.png" alt="Logo" className="h-20 w-30 ml-2 mt-2" />
+      </div>
       <div className="absolute top-4 right-4">
         <Link
           to="/login"
@@ -118,12 +182,8 @@ const Home: React.FC = () => {
                 value={name}
                 labelProps={{ color: "black" }}
                 onChange={(e) => setName(e.target.value)}
-                className="bg-gray-700  border-gray-600"
+                className="bg-gray-700 border-gray-600"
                 color="white"
-                aria-autocomplete="none"
-                onPointerEnterCapture={undefined}
-                onPointerLeaveCapture={undefined}
-                crossOrigin={undefined}
               />
             </div>
             <div className="mb-4">
@@ -141,12 +201,9 @@ const Home: React.FC = () => {
                       color={selectedOption === option ? "white" : "black"}
                       className={
                         selectedOption === option
-                          ? " text-gray-900  focus:outline-none focus:ring-2 "
-                          : "text-white  focus:outline-none focus:ring-2 "
+                          ? "text-gray-900 focus:outline-none focus:ring-2"
+                          : "text-white focus:outline-none focus:ring-2"
                       }
-                      placeholder={undefined}
-                      onPointerEnterCapture={undefined}
-                      onPointerLeaveCapture={undefined}
                     >
                       {option}
                     </Button>
@@ -157,10 +214,7 @@ const Home: React.FC = () => {
             <Button
               onClick={handleSubmit}
               color="white"
-              className="text-gray-900 "
-              placeholder={undefined}
-              onPointerEnterCapture={undefined}
-              onPointerLeaveCapture={undefined}
+              className="text-gray-900"
             >
               Submit
             </Button>
@@ -168,7 +222,19 @@ const Home: React.FC = () => {
               className={`mt-4 w-full h-20 rounded-md ${
                 status ? "bg-green-600" : "bg-yellow-600"
               } transition-colors duration-300`}
-            />
+            >
+              <div className="text-center pt-5 text-gray-900" >
+                {isSubmitted ? (
+                  queueCounts[selectedOption] === 1
+                    ? "Your turn"
+                    : queueCounts[selectedOption] !== undefined
+                    ? `Your current position in the queue: ${queueCounts[selectedOption]}`
+                    : "Loading..."
+                ) : (
+                  "Please submit the form to see your position."
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
