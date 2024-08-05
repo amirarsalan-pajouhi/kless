@@ -9,6 +9,7 @@ import {
   orderBy,
   QuerySnapshot,
   DocumentData,
+  addDoc,
 } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { signOut } from "firebase/auth";
@@ -34,16 +35,19 @@ export default function Admin() {
 
   useEffect(() => {
     // Set up Firestore listener
-    const userCollection = collection(db, 'users');
-    const q = query(userCollection, orderBy('time')); // Order by the 'time' field
+    const userCollection = collection(db, "users");
+    const q = query(userCollection, orderBy("time")); // Order by the 'time' field
 
-    const unsubscribe = onSnapshot(q, (snapshot: QuerySnapshot<DocumentData>) => {
-      const userList = snapshot.docs.map((doc:any) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<User, 'id'>), // Cast data to User type, excluding 'id'
-      })) as User[];
-      setUsers(userList);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot: QuerySnapshot<DocumentData>) => {
+        const userList = snapshot.docs.map((doc: any) => ({
+          id: doc.id,
+          ...(doc.data() as Omit<User, "id">), // Cast data to User type, excluding 'id'
+        })) as User[];
+        setUsers(userList);
+      }
+    );
 
     // Clean up the listener on component unmount
     return () => unsubscribe();
@@ -66,12 +70,27 @@ export default function Admin() {
 
   const handleAccept = async (id: string) => {
     const userDoc = doc(db, "users", id);
-    await updateDoc(userDoc, { status: true, admin: auth.currentUser?.uid });
+    try {
+      await updateDoc(userDoc, { status: true, admin: auth.currentUser?.uid });
+
+    } catch (error) {
+     console.log(error) 
+    }
   };
 
-  const handleDelete = async (id: string) => {
-    const userDoc = doc(db, "users", id);
-    await deleteDoc(userDoc);
+  const handleDelete = async (user:User) => {
+    const userDoc = doc(db, "users", user.id);
+    try {
+      await deleteDoc(userDoc);
+      await addDoc(collection(db, "history"), {
+        name: user.name ,
+        option: user.option,
+        time: user.time,
+      });
+    } catch (error) {
+      console.log(error)
+    }
+
   };
 
   const handleLogout = async () => {
@@ -119,7 +138,7 @@ export default function Admin() {
                           </button>
                         )}
                         <button
-                          onClick={() => handleDelete(user.id)}
+                          onClick={() => handleDelete(user)}
                           className={
                             user.status && auth.currentUser?.uid !== user.admin
                               ? "hidden"
