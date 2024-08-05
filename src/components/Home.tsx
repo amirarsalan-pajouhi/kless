@@ -227,7 +227,7 @@ const Home: React.FC = () => {
                 {isSubmitted ? (
                   queueCounts[selectedOption] === 1
                     ? "Your turn"
-                    : queueCounts[selectedOption] !== undefined
+                    : queueCounts[selectedOption] !== undefined 
                     ? `Your current position in the queue: ${queueCounts[selectedOption]}`
                     : "Loading..."
                 ) : (
