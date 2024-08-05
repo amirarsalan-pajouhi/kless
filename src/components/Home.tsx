@@ -48,11 +48,10 @@ const Home: React.FC = () => {
 
         // Initialize queue counts
         const counts: { [key: string]: number } = {};
-        allOptions.forEach(option => {
+        allOptions.forEach((option) => {
           counts[option] = 0;
         });
         setQueueCounts(counts);
-
       } catch (error) {
         console.error("Error fetching documents: ", error);
         toast.error("Failed to load options.");
@@ -68,7 +67,10 @@ const Home: React.FC = () => {
     if (isSubmitted) {
       const updateQueueCounts = async () => {
         try {
-          const q = query(collection(db, "users"), where("status", "==", false));
+          const q = query(
+            collection(db, "users"),
+            where("status", "==", false)
+          );
           const unsubscribe = onSnapshot(q, (snapshot) => {
             const counts: { [key: string]: number } = {};
             snapshot.forEach((doc) => {
@@ -129,7 +131,7 @@ const Home: React.FC = () => {
         option: selectedOption,
         time: timestamp,
         status: false,
-        id
+        id,
       });
       setUserId(id); // Update userId to listen for status changes
       setIsSubmitted(true); // Set submission state to true
@@ -146,8 +148,9 @@ const Home: React.FC = () => {
   };
 
   const idGenerator = () => {
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = "";
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     const charactersLength = characters.length;
     let counter = 0;
     while (counter < 7) {
@@ -160,7 +163,11 @@ const Home: React.FC = () => {
   return (
     <section className="bg-gray-900 min-h-screen flex flex-col items-center justify-center p-4">
       <div className="absolute top-4 left-4">
-        <img src="public/Fenerbahçe_Üniversitesi_FBÜ.png" alt="Logo" className="h-20 w-30 ml-2 mt-2" />
+        <img
+          src="public/Fenerbahçe_Üniversitesi_FBÜ.png"
+          alt="Logo"
+          className="h-20 w-30 ml-2 mt-2"
+        />
       </div>
       <div className="absolute top-4 right-4">
         <Link
@@ -223,16 +230,14 @@ const Home: React.FC = () => {
                 status ? "bg-green-600" : "bg-yellow-600"
               } transition-colors duration-300`}
             >
-              <div className="text-center pt-5 text-gray-900" >
-                {isSubmitted ? (
-                  queueCounts[selectedOption] === 1
+              <div className="text-center pt-5 text-gray-900">
+                {isSubmitted
+                  ? queueCounts[selectedOption] === 1
                     ? "Your turn"
                     : queueCounts[selectedOption] !== undefined
                     ? `Your current position in the queue: ${queueCounts[selectedOption]}`
                     : "Loading..."
-                ) : (
-                  "Please submit the form to see your position."
-                )}
+                  : "Please submit the form to see your position."}
               </div>
             </div>
           </div>
