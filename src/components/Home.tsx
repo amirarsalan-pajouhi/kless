@@ -238,7 +238,7 @@ const Home: React.FC = () => {
                   ? queueCounts[selectedOption!] !== undefined
                     ? `Current position: ${queueCounts[selectedOption!]}`
                     : "Loading..."
-                  : "Please submit"}
+                  : "Please submit"} 
               </div>
             </div>
           </div>
