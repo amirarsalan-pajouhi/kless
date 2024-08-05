@@ -191,7 +191,11 @@ const Home: React.FC = () => {
                 labelProps={{ color: "black" }}
                 onChange={(e) => setName(e.target.value)}
                 className="bg-gray-700 border-gray-600"
-                color="white" onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} crossOrigin={undefined}              />
+                color="white"
+                onPointerEnterCapture={undefined}
+                onPointerLeaveCapture={undefined}
+                crossOrigin={undefined}
+              />
             </div>
             <div className="mb-4">
               <h3 className="text-xl font-semibold text-white mb-3">
@@ -206,9 +210,15 @@ const Home: React.FC = () => {
                       key={index}
                       onClick={() => handleOptionClick(option)}
                       color={selectedOption === option ? "white" : "black"}
-                      className={selectedOption === option
-                        ? "text-gray-900 focus:outline-none focus:ring-2"
-                        : "text-white focus:outline-none focus:ring-2"}  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                    >
+                      className={
+                        selectedOption === option
+                          ? "text-gray-900 focus:outline-none focus:ring-2"
+                          : "text-white focus:outline-none focus:ring-2"
+                      }
+                      placeholder={undefined}
+                      onPointerEnterCapture={undefined}
+                      onPointerLeaveCapture={undefined}
+                    >
                       {option}
                     </Button>
                   ))}
@@ -218,7 +228,11 @@ const Home: React.FC = () => {
             <Button
               onClick={handleSubmit}
               color="white"
-              className="text-gray-900"  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >
+              className="text-gray-900"
+              placeholder={undefined}
+              onPointerEnterCapture={undefined}
+              onPointerLeaveCapture={undefined}
+            >
               Submit
             </Button>
             <div
@@ -227,13 +241,13 @@ const Home: React.FC = () => {
               } transition-colors duration-300`}
             >
               <div className="text-center pt-5 text-gray-900">
-                {isSubmitted
-                  ? queueCounts[selectedOption!] === 1
-                    ? "Your turn"
-                    : queueCounts[selectedOption!] !== undefined 
-                    ? `Your current position in the queue: ${queueCounts[selectedOption!]}`
+                {status
+                  ? "Your turn!"
+                  : isSubmitted
+                  ? queueCounts[selectedOption!] !== undefined
+                    ? `current position: ${queueCounts[selectedOption!]}`
                     : "Loading..."
-                  : "Please submit the form to see your position."}
+                  : "Please submit."}
               </div>
             </div>
           </div>
