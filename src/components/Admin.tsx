@@ -72,25 +72,24 @@ export default function Admin() {
     const userDoc = doc(db, "users", id);
     try {
       await updateDoc(userDoc, { status: true, admin: auth.currentUser?.uid });
-
     } catch (error) {
-     console.log(error) 
+      console.log(error);
     }
   };
 
-  const handleDelete = async (user:User) => {
+  const handleDelete = async (user: User) => {
     const userDoc = doc(db, "users", user.id);
     try {
+      console.log(user)
       await deleteDoc(userDoc);
       await addDoc(collection(db, "history"), {
-        name: user.name ,
+        name: user.name,
         option: user.option,
         time: user.time,
       });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-
   };
 
   const handleLogout = async () => {
