@@ -14,11 +14,14 @@ import {
 export default function Login() {
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const username = e.target.username.value;
-    const password = e.target.password.value;
-    const email = username + "@gmail.com";
+    const form = e.currentTarget;
+    const username = (form.elements.namedItem("username") as HTMLInputElement)
+      .value;
+    const password = (form.elements.namedItem("password") as HTMLInputElement)
+      .value;
+    const email = `${username}@gmail.com`;
 
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -36,13 +39,22 @@ export default function Login() {
   };
 
   return (
-    <section style={{backgroundColor: "#202020"}} className="bg-gray-50 bg-gray-900 min-h-screen flex items-center justify-center p-8">
+    <section
+      style={{ backgroundColor: "#202020" }}
+      className="bg-gray-50 bg-gray-900 min-h-screen flex items-center justify-center p-8"
+    >
       <ToastContainer theme="dark" autoClose={2000} />
       <Card
         color="transparent"
         shadow={false}
         className="w-full max-w-md p-8"
-        style={{ backgroundColor: "#424242", borderColor: "#033649" , display: "flex", alignItems:"center", justifyContent:"center"}}
+        style={{
+          backgroundColor: "#424242",
+          borderColor: "#033649",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
         placeholder={undefined}
         onPointerEnterCapture={undefined}
         onPointerLeaveCapture={undefined}
