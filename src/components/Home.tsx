@@ -163,13 +163,7 @@ const Home: React.FC = () => {
 
   return (
     <section className="bg-gray-900 min-h-screen flex flex-col items-center justify-center p-4">
-      <div className="absolute top-4 left-4">
-        <img
-          src="public/Fenerbahçe_Üniversitesi_FBÜ.png"
-          alt="Logo"
-          className="h-20 w-30 ml-2 mt-2"
-        />
-      </div>
+
       <div className="absolute top-4 right-4">
         <Link
           to="/login"
@@ -181,60 +175,57 @@ const Home: React.FC = () => {
       <div className="container mx-auto p-4 max-w-md">
         <div className="bg-gray-800 rounded-lg shadow-lg border border-gray-700">
           <div className="p-6 space-y-4">
-            <h1 className="text-3xl font-extrabold text-white mb-4">
-              Queue App
+            <h1 className="text-3xl font-extrabold text-white mb-4 ">
+              - Queue App -
+      
             </h1>
-            <div className="mb-4">
-              <Input
-                label="Name"
-                value={name}
-                labelProps={{ color: "black" }}
-                onChange={(e) => setName(e.target.value)}
-                className="bg-gray-700 border-gray-600"
-                color="white"
-                onPointerEnterCapture={undefined}
-                onPointerLeaveCapture={undefined}
-                crossOrigin={undefined}
-              />
-            </div>
-            <div className="mb-4">
-              <h3 className="text-xl font-semibold text-white mb-3">
-                Options:
-              </h3>
-              {loading ? (
-                <div className="text-center text-white">Loading...</div>
-              ) : (
-                <div className="flex flex-col space-y-2">
-                  {options.map((option, index) => (
-                    <Button
-                      key={index}
-                      onClick={() => handleOptionClick(option)}
-                      color={selectedOption === option ? "white" : "black"}
-                      className={
-                        selectedOption === option
+            {isSubmitted ? (
+              <div className="mb-4 text-white text-xl ">
+                Name: ( {name} )
+              </div>
+            ) : (
+              <div className="mb-4">
+                <Input
+                    label="Name"
+                    value={name}
+                    labelProps={{ color: "black" }}
+                    onChange={(e) => setName(e.target.value)}
+                    className="bg-gray-700 border-gray-600"
+                    color="white" onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} crossOrigin={undefined}                />
+              </div>
+            )}
+            {!isSubmitted && (
+              <div className="mb-4">
+                <h3 className="text-xl font-semibold text-white mb-3">
+                  Options:
+                </h3>
+                {loading ? (
+                  <div className="text-center text-white">Loading...</div>
+                ) : (
+                  <div className="flex flex-col space-y-2">
+                    {options.map((option, index) => (
+                      <Button 
+                        key={index}
+                        onClick={() => handleOptionClick(option)}
+                        color={selectedOption === option ? "white" : "black"}
+                        className={selectedOption === option
                           ? "text-gray-900 focus:outline-none focus:ring-2"
-                          : "text-white focus:outline-none focus:ring-2"
-                      }
-                      placeholder={undefined}
-                      onPointerEnterCapture={undefined}
-                      onPointerLeaveCapture={undefined}
-                    >
-                      {option}
-                    </Button>
-                  ))}
-                </div>
-              )}
-            </div>
-            <Button
-              onClick={handleSubmit}
-              color="white"
-              className="text-gray-900"
-              placeholder={undefined}
-              onPointerEnterCapture={undefined}
-              onPointerLeaveCapture={undefined}
-            >
-              Submit
-            </Button>
+                          : "text-white focus:outline-none focus:ring-2"}  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                      >
+                        {option}
+                      </Button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+            {!isSubmitted && (
+              <Button
+                onClick={handleSubmit}
+                color="white"
+                className="text-gray-900"  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}              >
+                Submit
+              </Button>
+            )}
             <div
               className={`mt-4 w-full h-20 rounded-md ${
                 status ? "bg-green-600" : "bg-yellow-600"
@@ -245,9 +236,9 @@ const Home: React.FC = () => {
                   ? "Your turn!"
                   : isSubmitted
                   ? queueCounts[selectedOption!] !== undefined
-                    ? `current position: ${queueCounts[selectedOption!]}`
+                    ? `Current position: ${queueCounts[selectedOption!]}`
                     : "Loading..."
-                  : "Please submit."}
+                  : "Please submit"}
               </div>
             </div>
           </div>
