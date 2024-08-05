@@ -13,13 +13,14 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
 import { Button, Input } from "@material-tailwind/react";
-import * as React from "react";
+import React from "react";
 
 interface User {
   name: string;
   option: string;
   time: string;
   status: boolean;
+  id: string;
 }
 
 const Home: React.FC = () => {
@@ -96,7 +97,7 @@ const Home: React.FC = () => {
   }, [isSubmitted]);
 
   useEffect(() => {
-    if (userId) {
+    if (userId !== "new") {
       const userDoc = doc(db, "users", userId);
       const unsubscribe = onSnapshot(userDoc, (doc) => {
         if (doc.exists()) {
@@ -190,8 +191,7 @@ const Home: React.FC = () => {
                 labelProps={{ color: "black" }}
                 onChange={(e) => setName(e.target.value)}
                 className="bg-gray-700 border-gray-600"
-                color="white"
-              />
+                color="white" onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} crossOrigin={undefined}              />
             </div>
             <div className="mb-4">
               <h3 className="text-xl font-semibold text-white mb-3">
@@ -206,12 +206,9 @@ const Home: React.FC = () => {
                       key={index}
                       onClick={() => handleOptionClick(option)}
                       color={selectedOption === option ? "white" : "black"}
-                      className={
-                        selectedOption === option
-                          ? "text-gray-900 focus:outline-none focus:ring-2"
-                          : "text-white focus:outline-none focus:ring-2"
-                      }
-                    >
+                      className={selectedOption === option
+                        ? "text-gray-900 focus:outline-none focus:ring-2"
+                        : "text-white focus:outline-none focus:ring-2"}  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                    >
                       {option}
                     </Button>
                   ))}
@@ -221,8 +218,7 @@ const Home: React.FC = () => {
             <Button
               onClick={handleSubmit}
               color="white"
-              className="text-gray-900"
-            >
+              className="text-gray-900"  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >
               Submit
             </Button>
             <div
@@ -232,10 +228,10 @@ const Home: React.FC = () => {
             >
               <div className="text-center pt-5 text-gray-900">
                 {isSubmitted
-                  ? queueCounts[selectedOption] === 1
+                  ? queueCounts[selectedOption!] === 1
                     ? "Your turn"
-                    : queueCounts[selectedOption] !== undefined 
-                    ? `Your current position in the queue: ${queueCounts[selectedOption]}`
+                    : queueCounts[selectedOption!] !== undefined 
+                    ? `Your current position in the queue: ${queueCounts[selectedOption!]}`
                     : "Loading..."
                   : "Please submit the form to see your position."}
               </div>
