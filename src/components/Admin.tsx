@@ -1,5 +1,15 @@
 import { useState, useEffect } from "react";
-import { collection, onSnapshot, updateDoc, deleteDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  updateDoc,
+  deleteDoc,
+  doc,
+  query,
+  orderBy,
+  QuerySnapshot,
+  DocumentData,
+} from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
@@ -24,11 +34,13 @@ export default function Admin() {
 
   useEffect(() => {
     // Set up Firestore listener
-    const userCollection = collection(db, "users");
-    const unsubscribe = onSnapshot(userCollection, (snapshot) => {
-      const userList = snapshot.docs.map((doc) => ({
+    const userCollection = collection(db, 'users');
+    const q = query(userCollection, orderBy('time')); // Order by the 'time' field
+
+    const unsubscribe = onSnapshot(q, (snapshot: QuerySnapshot<DocumentData>) => {
+      const userList = snapshot.docs.map((doc:any) => ({
         id: doc.id,
-        ...doc.data(),
+        ...(doc.data() as Omit<User, 'id'>), // Cast data to User type, excluding 'id'
       })) as User[];
       setUsers(userList);
     });
@@ -74,7 +86,7 @@ export default function Admin() {
   return (
     <section className="bg-gray-900 min-h-screen flex flex-col items-center p-6">
       <div className="container mx-auto h-full flex flex-col">
-        <h1 className="text-2xl font-bold leading-tight tracking-tight text-white md:text-3xl mb-4">
+        <h1 className="text-2xl font-bold leading-tight tracking-tight text-white md:text-3xl mb-8">
           Admin Page
         </h1>
 
@@ -131,7 +143,7 @@ export default function Admin() {
 
         <button
           onClick={handleLogout}
-          className="absolute bottom-4 left-4 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+          className="absolute top-4 right-4 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
         >
           Logout
         </button>

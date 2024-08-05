@@ -238,9 +238,9 @@ const Home: React.FC = () => {
             <div
               className={`mt-4 w-full h-20 rounded-md ${
                 status ? "bg-green-600" : "bg-yellow-600"
-              } transition-colors duration-300`}
+              } transition-colors duration-300 flex justify-center items-center`}
             >
-              <div className="text-center pt-5 text-gray-900">
+              <div className=" text-gray-900 font-bold text-xl ">
                 {status
                   ? "Your turn!"
                   : isSubmitted
